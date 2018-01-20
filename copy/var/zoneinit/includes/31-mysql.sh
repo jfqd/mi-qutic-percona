@@ -26,7 +26,7 @@ fi
 log "getting qb_pw"
 QB_PW=${QB_PW:-$(mdata-get mysql_qb_pw 2>/dev/null)} || \
 QB_PW=$(od -An -N8 -x /dev/random | head -1 | sed 's/^[ \t]*//' | tr -d ' ');
-QB_US=qb-$(zonename | awk -F\- '{ print $5 }');
+QB_US=qb-$(zonename | awk -F\- '{ print $1 }');
 
 # Be sure the generated MYSQL_PW password set also as mdata
 # information.
