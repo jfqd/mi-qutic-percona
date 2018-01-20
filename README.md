@@ -53,7 +53,8 @@ vmadm create << EOF
     "vfstab":                "storage.example.com:/export/data    -       /data    nfs     -       yes     rw,bg,intr",
     "mysql_pw":              "fe07774d219916e6ca29dfdbca331ebb",
     "mysql_server_id":       "1",
-    "mysql_qb_pw":           "c418530bee3ccf52f2637e1baac4b72b"
+    "mysql_qb_pw":           "c418530bee3ccf52f2637e1baac4b72b",
+    "delegate_dataset":      false
   }
 }
 EOF

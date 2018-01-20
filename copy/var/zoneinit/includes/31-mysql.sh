@@ -4,10 +4,7 @@ IP_INTERNAL=$(mdata-get sdc:nics | /usr/bin/json -ag ip -c 'this.nic_tag === "ad
 
 # Get mysql_password from metadata if exists, or use mysql_pw, or set one.
 log "getting mysql_password"
-if [[ $(mdata-get mysql_password &>/dev/null)$? -eq "0" ]]; then
-    MYSQL_PW=$(mdata-get mysql_password 2>/dev/null);
-    mdata-put mysql_pw ${MYSQL_PW}
-elif [[ $(mdata-get mysql_pw &>/dev/null)$? -eq "0" ]]; then
+if [[ $(mdata-get mysql_pw &>/dev/null)$? -eq "0" ]]; then
     MYSQL_PW=$(mdata-get mysql_pw 2>/dev/null);
 else
     MYSQL_PW=$(od -An -N16 -x /dev/random | head -1 | tr -d ' ');
