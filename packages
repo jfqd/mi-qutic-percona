@@ -9,4 +9,7 @@ qpress
 quickbackup-percona
 innotop
 mytop
+mysqltuner
 smtools
+redis
+memcached
