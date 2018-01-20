@@ -2,21 +2,12 @@
 IP_EXTERNAL=$(mdata-get sdc:nics | /usr/bin/json -ag ip -c 'this.nic_tag === "external"' 2>/dev/null);
 IP_INTERNAL=$(mdata-get sdc:nics | /usr/bin/json -ag ip -c 'this.nic_tag === "admin"' 2>/dev/null);
 
-create_mysql_pw() {
-  MYSQL_PW=$(od -An -N16 -x /dev/random | head -1 | tr -d ' ');
-  mdata-put mysql_pw ${MYSQL_PW}
-}
-
-create_quickbackup_pw() {
-  QB_PW=$(od -An -N16 -x /dev/random | head -1 | tr -d ' ');
-  mdata-put mysql_pw ${MYSQL_PW}
-}
-
-# Get mysql_password from metadata if exists, or use mysql_pw, or set one.
 log "getting mysql_password"
-if mdata-get mysql_pw 1>/dev/null 2>&1; then
-  MYSQL_PW=$(mdata-get mysql_pw 2>/dev/null);
-  [[ -z "${MYSQL_PW}" ]] && create_mysql_pw
+if [[ $(mdata-get mysql_pass &>/dev/null)$? -eq "0" ]]; then
+    MYSQL_PW=$(mdata-get mysql_pass 2>/dev/null);
+else
+    MYSQL_PW=$(od -An -N8 -x /dev/random | head -1 | tr -d ' ');
+    mdata-put mysql_pw ${MYSQL_PW}
 fi
 
 # Get mysql_server_id from metadata if exists
@@ -29,16 +20,12 @@ fi
 # Generate svccfg happy password for quickbackup-percona
 # (one without special characters)
 log "getting qb_pw"
-if mdata-get mysql_qb_pw 1>/dev/null 2>&1; then
-  QB_PW=$(mdata-get mysql_qb_pw 2>/dev/null);
-  [[ -z "QB_PW" ]] && create_quickbackup_pw
-fi
+QB_PW=${QB_PW:-$(mdata-get mysql_qb_pass 2>/dev/null)} || \
+QB_PW=$(od -An -N8 -x /dev/random | head -1 | sed 's/^[ \t]*//' | tr -d ' ');
 QB_US=qb-$(zonename | awk -F\- '{ print $1 }');
 
-# Be sure the generated MYSQL_PW password set also as mdata
-# information.
-mdata-put mysql_qb_pw "${QB_PW}"
-mdata-put mysql_qb_usr "${QB_US}"
+mdata-put mysql_qb_pass "${QB_PW}"
+mdata-put mysql_qb_uid "${QB_US}"
 
 # Workaround for using DHCP so IP_INTERNAL or IP_EXTERNAL is empty
 if [[ -z "${IP_INTERNAL}" ]] || [[ -z "${IP_EXTERNAL}" ]]; then

@@ -22,8 +22,8 @@
     "ssh_host_dsa_key.pub":  {"type": "text", "description": "public SSH dsa key for the host daemon"},
     "munin_master_allow":    {"type": "text", "description": "ip addresses (alternative hostname) of the munin master node"},
     "vfstab":                {"type": "text", "description": "nfs mountpoint for vfstab-file"},
-    "mysql_pw":              {"type": "text", "description": "mysql root password"},
+    "mysql_pass":            {"type": "text", "description": "mysql root password"},
     "mysql_server_id":       {"type": "text", "description": "mysql server id"},
-    "mysql_qb_pw":           {"type": "text", "description": "mysql quickbackup password"}
+    "mysql_qb_pass":         {"type": "text", "description": "mysql quickbackup password"}
   }
 }
