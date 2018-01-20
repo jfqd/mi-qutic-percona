@@ -1,0 +1,12 @@
+# List packages to add to your image one per line.
+p5-DBD-percona56
+p5-Cache-Cache
+percona-server>=5.6.32
+percona-client>=5.6.32
+percona-toolkit
+percona56-xtrabackup
+qpress
+quickbackup-percona
+innotop
+mytop
+smtools
