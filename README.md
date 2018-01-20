@@ -58,3 +58,5 @@ vmadm create << EOF
 }
 EOF
 ```
+
+After creating the zone login and run `/opt/local/bin/mysql_secure_installation`!

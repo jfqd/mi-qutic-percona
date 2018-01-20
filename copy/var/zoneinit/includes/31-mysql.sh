@@ -1,6 +1,6 @@
 # Get internal and external ip of vm
 IP_EXTERNAL=$(mdata-get sdc:nics | /usr/bin/json -ag ip -c 'this.nic_tag === "external"' 2>/dev/null);
-IP_INTERNAL=$(mdata-get sdc:nics | /usr/bin/json -ag ip -c 'this.nic_tag === "internal"' 2>/dev/null);
+IP_INTERNAL=$(mdata-get sdc:nics | /usr/bin/json -ag ip -c 'this.nic_tag === "admin"' 2>/dev/null);
 
 # Get mysql_password from metadata if exists, or use mysql_pw, or set one.
 log "getting mysql_password"
@@ -39,8 +39,7 @@ if [ -z "${IP_INTERNAL}" ] || [ -z "${IP_EXTERNAL}" ]; then
 fi
 
 # Default query to lock down access and clean up
-MYSQL_INIT="DELETE from mysql.user;
-DELETE FROM mysql.proxies_priv WHERE Host='base.joyent.us';
+MYSQL_INIT="DELETE FROM mysql.proxies_priv WHERE Host='base.joyent.us';
 GRANT ALL on *.* to 'root'@'localhost' identified by '${MYSQL_PW}' with grant option;
 GRANT ALL on *.* to 'root'@'${IP_INTERNAL:-${IP_EXTERNAL}}' identified by '${MYSQL_PW}' with grant option;
 GRANT LOCK TABLES,SELECT,RELOAD,SUPER,PROCESS,REPLICATION CLIENT on *.* to '${QB_US}'@'localhost' identified by '${QB_PW}';
