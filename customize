@@ -28,7 +28,12 @@ mysql_select_types
 mysql_slow
 mysql_sorts
 mysql_table_locks
-mysql_tmp_tables"
+mysql_tmp_tables
+mysql_queries
+mysql_slowqueries
+mysql_threads
+mysql_bytes
+"
 
 # Exit if any commands fail
 set -o errexit
