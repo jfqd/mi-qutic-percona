@@ -9,6 +9,7 @@ percona56-xtrabackup
 quickbackup-percona
 innotop
 mytop
+heirloom-printenv
 mysqltuner
 redis
 memcached

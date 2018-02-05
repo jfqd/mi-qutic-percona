@@ -44,6 +44,12 @@ rm -rf /var/mysql/*
 echo "* Activate munin plugins"
 /opt/qutic/bin/munin-node-plugins ${MUNIN_PLUGINS}
 
+echo "* fix mysqltuner"
+gsed -i \
+     -e '#svc:/network/mysql-quickbackup:default#svc:/pkgsrc/quickbackup-percona:default#' \
+     -e 's#my $userpath = `printenv HOME`;#my $userpath = `/opt/local/heirloom/bin/printenv HOME`;#' \
+     /opt/local/bin/mysqltuner.pl
+
 echo "* Cleaning up"
 rm /root/customize
 cp /etc/skel/.bashrc /root/.bashrc
