@@ -1,0 +1,1 @@
+echo '49 6 * * 6 [[ -x /opt/local/bin/mysqltuner.pl ]] && /opt/local/bin/mysqltuner.pl --socket /tmp/mysql.sock --defaults-file /root/.my.cnf  2>/dev/null --nocolor | mailx -s "[$(/usr/bin/hostname)] mysqltuner-report" report@qutic.com' >> /var/spool/cron/crontabs/mysql
