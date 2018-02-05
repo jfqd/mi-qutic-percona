@@ -1,5 +1,9 @@
 # Changelog
 
+## 17.4.1
+
+* include redis and memcached
+
 ## 17.4.0
 
 * qutify image
