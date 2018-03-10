@@ -33,6 +33,15 @@ mysql_queries
 mysql_slowqueries
 mysql_threads
 mysql_bytes
+memcached_rates
+memcached_bytes
+memcached_counters
+redis_connected_clients
+redis_key_ratio
+redis_keys_per_sec
+redis_per_sec
+redis_used_keys
+redis_used_memory
 "
 
 # Exit if any commands fail
@@ -49,6 +58,8 @@ gsed -i \
      -e '#svc:/network/mysql-quickbackup:default#svc:/pkgsrc/quickbackup-percona:default#' \
      -e 's#my $userpath = `printenv HOME`;#my $userpath = `/opt/local/heirloom/bin/printenv HOME`;#' \
      /opt/local/bin/mysqltuner.pl
+
+mv /var/zoneinit/tmp/memcached /opt/local/etc/munin/plugin-conf.d/memcached
 
 echo "* Cleaning up"
 rm /root/customize
