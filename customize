@@ -55,7 +55,7 @@ echo "* Activate munin plugins"
 
 echo "* fix mysqltuner"
 gsed -i \
-     -e '#svc:/network/mysql-quickbackup:default#svc:/pkgsrc/quickbackup-percona:default#' \
+     -e 's#svc:/network/mysql-quickbackup:default#svc:/pkgsrc/quickbackup-percona:default#' \
      -e 's#my $userpath = `printenv HOME`;#my $userpath = `/opt/local/heirloom/bin/printenv HOME`;#' \
      /opt/local/bin/mysqltuner.pl
 
