@@ -1,9 +1,8 @@
 # Get internal and external ip of vm
-IP_EXTERNAL=$(mdata-get sdc:nics | /usr/bin/json -ag ip -c 'this.nic_tag === "external"' 2>/dev/null);
 IP_INTERNAL=$(mdata-get sdc:nics | /usr/bin/json -ag ip -c 'this.nic_tag === "admin"' 2>/dev/null);
 
 # Workaround for using DHCP so IP_INTERNAL or IP_EXTERNAL is empty
-if [[ -z "${IP_INTERNAL}" ]] || [[ -z "${IP_EXTERNAL}" ]]; then
+if [[ -z "${IP_INTERNAL}" ]]; then
   IP_INTERNAL="127.0.0.1"
 fi
 
@@ -15,3 +14,4 @@ gsed -i \
      /opt/local/etc/redis.conf
 
 touch /var/log/redis/redis.log
+chown redis:redis /var/log/redis/redis.log

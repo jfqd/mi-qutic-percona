@@ -1,5 +1,4 @@
 # Get internal and external ip of vm
-IP_EXTERNAL=$(mdata-get sdc:nics | /usr/bin/json -ag ip -c 'this.nic_tag === "external"' 2>/dev/null);
 IP_INTERNAL=$(mdata-get sdc:nics | /usr/bin/json -ag ip -c 'this.nic_tag === "admin"' 2>/dev/null);
 
 log "getting mysql_password"
@@ -24,14 +23,14 @@ QB_PW=$(od -An -N8 -x /dev/random | head -1 | sed 's/^[ \t]*//' | tr -d ' ');
 QB_US=qb-$(zonename | awk -F\- '{ print $1 }');
 
 # Workaround for using DHCP so IP_INTERNAL or IP_EXTERNAL is empty
-if [[ -z "${IP_INTERNAL}" ]] || [[ -z "${IP_EXTERNAL}" ]]; then
+if [[ -z "${IP_INTERNAL}" ]]; then
   IP_INTERNAL="127.0.0.1"
 fi
 
 # Default query to lock down access and clean up
 MYSQL_INIT="DELETE FROM mysql.proxies_priv WHERE Host='base.joyent.us';
 GRANT ALL on *.* to 'root'@'localhost' identified by '${MYSQL_PW}' with grant option;
-GRANT ALL on *.* to 'root'@'${IP_INTERNAL:-${IP_EXTERNAL}}' identified by '${MYSQL_PW}' with grant option;
+GRANT ALL on *.* to 'root'@'${IP_INTERNAL}' identified by '${MYSQL_PW}' with grant option;
 GRANT LOCK TABLES,SELECT,RELOAD,SUPER,PROCESS,REPLICATION CLIENT on *.* to '${QB_US}'@'localhost' identified by '${QB_PW}';
 FLUSH PRIVILEGES;
 FLUSH TABLES;"
@@ -59,7 +58,7 @@ THREAD_CACHE_SIZE=$((${MAX_CONNECTIONS}/2))
 
 log "tuning MySQL configuration"
 gsed -i \
-        -e "s/bind-address = 127.0.0.1/bind-address = ${IP_INTERNAL:-${IP_EXTERNAL}}/" \
+        -e "s/bind-address = 127.0.0.1/bind-address = ${IP_INTERNAL}/" \
         -e "s/back_log = 64/back_log = ${BACK_LOG}/" \
         -e "s/thread_cache_size = 1000/thread_cache_size = ${THREAD_CACHE_SIZE}/" \
         -e "s/max_connections = 1000/max_connections = ${MAX_CONNECTIONS}/" \
