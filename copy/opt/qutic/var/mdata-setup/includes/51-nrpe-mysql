@@ -4,6 +4,6 @@
 if mdata-get nagios_mysql_pass 1>/dev/null 2>&1; then
   NAGIOS_MYSQL_PASSWORD=$(mdata-get nagios_mysql_pass)
   gsed -i \
-       -e "s/nagios-mysql-password/${NAGIOS_MYSQL_PASSWORD}/" \
+       "s/nagios-mysql-password/${NAGIOS_MYSQL_PASSWORD}/" \
        /opt/local/etc/nagios/nrpe_local.cfg
 fi
