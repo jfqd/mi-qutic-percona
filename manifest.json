@@ -21,6 +21,8 @@
     "ssh_host_dsa_key":      {"type": "text", "description": "private SSH dsa key for the host daemon"},
     "ssh_host_dsa_key.pub":  {"type": "text", "description": "public SSH dsa key for the host daemon"},
     "munin_master_allow":    {"type": "text", "description": "ip addresses (alternative hostname) of the munin master node"},
+    "nagios_allow":          {"type": "text", "description": "ip addresses (with cidr) of nagios server nodes, seperated by comma"},
+    "nagios_mysql_pass":     {"type": "text", "description": "nagios mysql password"},
     "vfstab":                {"type": "text", "description": "nfs mountpoint for vfstab-file"},
     "mysql_pass":            {"type": "text", "description": "mysql root password"},
     "mysql_server_id":       {"type": "text", "description": "mysql server id"},
