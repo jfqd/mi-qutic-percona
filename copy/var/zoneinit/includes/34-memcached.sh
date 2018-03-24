@@ -17,3 +17,5 @@ svccfg import /opt/local/lib/svc/manifest/memcached.xml
 gsed -i \
      -e "s/127.0.0.1/${IP_INTERNAL}/" \
      /opt/local/etc/munin/plugin-conf.d/memcached
+
+svcadm enable svc:/pkgsrc/memcached:default

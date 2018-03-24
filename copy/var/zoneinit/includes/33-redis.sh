@@ -15,3 +15,5 @@ gsed -i \
 
 touch /var/log/redis/redis.log
 chown redis:redis /var/log/redis/redis.log
+
+svcadm enable svc:/pkgsrc/redis:default
