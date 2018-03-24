@@ -63,6 +63,7 @@ mv /var/zoneinit/tmp/memcached /opt/local/etc/munin/plugin-conf.d/memcached
 
 echo "* setup backup path"
 mkdir -p /var/backups/mysql
+chmod 0750 /var/backups/percona
 
 echo "* Cleaning up"
 rm /root/customize

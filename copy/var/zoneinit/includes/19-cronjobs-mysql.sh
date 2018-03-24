@@ -1,1 +1,3 @@
-echo '49 6 * * 6 [[ -x /opt/local/bin/mysqltuner.pl ]] && /opt/local/bin/mysqltuner.pl --socket /tmp/mysql.sock --defaults-file /root/.my.cnf  2>/dev/null --nocolor | mailx -s "[$(/usr/bin/hostname)] mysqltuner-report" report@qutic.com' >> /var/spool/cron/crontabs/mysql
+echo '49 6 * * 6 [[ -x /opt/local/bin/mysqltuner.pl ]] && /opt/local/bin/mysqltuner.pl --socket /tmp/mysql.sock 2>/dev/null --nocolor | mailx -s "[$(/usr/bin/hostname)] mysqltuner-report" report@qutic.com' >> /var/spool/cron/crontabs/mysql
+echo '20 6 * * * [[ -d /var/backups/mysql ]] && /usr/bin/rsync -avHE --delete /var/backups/percona/$(hostname)/ /var/backups/mysql/$(hostname)/' >> /var/spool/cron/crontabs/mysql
+echo '20 4 * * * [[ -x /opt/qutic/bin/mysqldump-daily ]] && /opt/qutic/bin/mysqldump-daily' >> /var/spool/cron/crontabs/root
