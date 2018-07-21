@@ -1,5 +1,10 @@
 # Changelog
 
+## 17.4.3
+
+* add spiped services
+* only allow spiped access for memcahced and redis
+
 ## 17.4.2
 
 * build on latest qutic base image

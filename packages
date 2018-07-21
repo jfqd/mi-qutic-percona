@@ -14,3 +14,4 @@ mysqltuner
 redis
 memcached
 p5-Cache-Memcached
+spiped

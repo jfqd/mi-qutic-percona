@@ -61,6 +61,17 @@ gsed -i \
 
 mv /var/zoneinit/tmp/memcached /opt/local/etc/munin/plugin-conf.d/memcached
 
+echo "* setup spiped"
+useradd -m -s /usr/bin/false -d / -u 120 -g spiped spiped
+dd if=/dev/urandom bs=32 count=1 2>/dev/null | shasum -a 512 | awk '{print $1}' | tr -d '\n' > /etc/ssh/spiped.key
+chmod 0640 /etc/ssh/spiped.key
+chown root:spiped /etc/ssh/spiped.key
+
+svccfg import /opt/local/lib/svc/spiped-memcached.xml
+svccfg import /opt/local/lib/svc/spiped-percona.xml
+svccfg import /opt/local/lib/svc/spiped-redis.xml
+svccfg delete svc:/pkgsrc/spiped:default
+
 echo "* setup backup path"
 mkdir -p /var/backups/mysql
 chmod 0750 /var/backups/percona
