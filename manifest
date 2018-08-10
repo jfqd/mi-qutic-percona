@@ -1,7 +1,7 @@
 name="qutic-percona"
 organization="qutic development"
 brand="Instance"
-version="18.2.0"
+version="17.4.4"
 description="A SmartOS 64-bit image pre-configured and optimized as a Percona 64-bit MySQL server with Quickbackup."
 homepage="https://github.com/jfqd/mi-qutic-percona"
 users="root admin mysql"

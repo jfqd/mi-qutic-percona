@@ -1,8 +1,9 @@
 # Changelog
 
-## 18.2.0
+## 17.4.4
 
-* use qutic 2018Q2 base image
+* add logadm config
+* ruby24 with redis gem
 
 ## 17.4.3
 
