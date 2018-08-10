@@ -1,9 +1,9 @@
 # List packages to add to your image one per line.
 p5-DBD-percona56
 p5-Cache-Cache
-percona-server-5.6.36
+percona-server-5.6.39
 percona-toolkit
-percona56-xtrabackup
+percona-xtrabackup
 # already installed as a dependency
 # qpress
 quickbackup-percona

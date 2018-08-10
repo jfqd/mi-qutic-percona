@@ -1,6 +1,6 @@
 {
   "name":         "qutic-base-64",
-  "version":      "17.4.3",
+  "version":      "18.2.0",
   "description":  "A SmartOS 64-bit image pre-configured and optimized as a Percona 64-bit MySQL server with Quickbackup.",
   "organization": "qutic development",
   "brand":        "Instance",

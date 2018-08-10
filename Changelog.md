@@ -1,5 +1,9 @@
 # Changelog
 
+## 18.2.0
+
+* use qutic 2018Q2 base image
+
 ## 17.4.3
 
 * add spiped services
