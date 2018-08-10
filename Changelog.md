@@ -3,7 +3,7 @@
 ## 17.4.3
 
 * add spiped services
-* only allow spiped access for memcahced and redis
+* only allow spiped access for memcached and redis
 
 ## 17.4.2
 
