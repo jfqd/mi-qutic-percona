@@ -25,6 +25,9 @@ chown -R mysql:mysql /var/backups/percona
 chmod 0750 "/var/backups/percona/${host}/${today}"
 chmod 0640 "/var/backups/percona/${host}/${today}/"*
 
+# only preserve the last 30 backups
+/usr/bin/ls -1dt "/var/backups/percona/${host}"/* | /usr/bin/tail -n +30 | /usr/bin/xargs rm -rf
+
 /usr/bin/logger -p notice -t mysqldump "End of daily mysqldump."
 
 exit 0
