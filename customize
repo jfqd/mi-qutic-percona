@@ -71,9 +71,9 @@ dd if=/dev/urandom bs=32 count=1 2>/dev/null | shasum -a 512 | awk '{print $1}' 
 chmod 0640 /etc/ssh/spiped.key
 chown root:spiped /etc/ssh/spiped.key
 
-svccfg import /opt/local/lib/svc/spiped-memcached.xml
-svccfg import /opt/local/lib/svc/spiped-percona.xml
-svccfg import /opt/local/lib/svc/spiped-redis.xml
+svccfg import /opt/local/lib/svc/manifest/spiped-memcached.xml
+svccfg import /opt/local/lib/svc/manifest/spiped-percona.xml
+svccfg import /opt/local/lib/svc/manifest/spiped-redis.xml
 svccfg delete svc:/pkgsrc/spiped:default
 
 echo "* setup backup path"
