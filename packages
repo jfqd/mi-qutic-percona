@@ -1,7 +1,7 @@
 # List packages to add to your image one per line.
 p5-DBD-percona56
 p5-Cache-Cache
-percona-server-5.6.39
+percona-server-8.0.15
 percona-toolkit
 percona-xtrabackup
 # already installed as a dependency
