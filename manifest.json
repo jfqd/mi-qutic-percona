@@ -29,6 +29,7 @@
     "mysql_replication_host": {"type": "text", "description": "mysql replication host"},
     "mysql_server_id":        {"type": "text", "description": "mysql server id"},
     "mysql_qb_pass":          {"type": "text", "description": "mysql quickbackup password"},
+    "mysql_tls_pem":          {"type": "text", "description": "pem file for mysql"},
     "redis_master_host":      {"type": "text", "description": "redis master host"}
   }
 }
