@@ -15,4 +15,3 @@ redis
 memcached
 p5-Cache-Memcached
 spiped
-ruby24
