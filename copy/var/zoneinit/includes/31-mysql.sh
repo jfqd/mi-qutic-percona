@@ -74,12 +74,12 @@ touch /var/log/mysql/quickbackup-percona.log
 
 log "shutting down an existing instance of MySQL"
 if [[ "$(svcs -Ho state svc:/pkgsrc/percona:default)" == "online" ]]; then
-  svcadm disable -t svc:/pkgsrc/percona:default
+  svcadm restart -t svc:/pkgsrc/percona:default
   sleep 2
 fi
 
-log "starting the new MySQL instance"
-svcadm enable svc:/pkgsrc/percona:default
+#log "starting the new MySQL instance"
+#svcadm enable svc:/pkgsrc/percona:default
 
 log "waiting for the socket to show up"
 COUNT="0";
