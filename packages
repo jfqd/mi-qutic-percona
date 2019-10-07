@@ -1,5 +1,5 @@
 # List packages to add to your image one per line.
-p5-DBD-percona56
+p5-DBD-percona80
 p5-Cache-Cache
 percona-server-8.0.15
 percona-toolkit
