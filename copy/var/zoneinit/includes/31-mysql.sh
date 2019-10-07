@@ -12,7 +12,7 @@ fi
 log "getting mysql_server_id"
 if [[ $(mdata-get mysql_server_id &>/dev/null)$? -eq "0" ]]; then
   MYSQL_SERVER_ID=$(mdata-get mysql_server_id 2>/dev/null);
-  gsed -i "/^server-id/s/server-id.*/server-id = ${MYSQL_SERVER_ID}/" /opt/local/etc/my.cnf
+  gsed -i "s/server-id = 1/server-id = ${MYSQL_SERVER_ID}/" /opt/local/etc/my.cnf
 fi
 
 # Generate svccfg happy password for quickbackup-percona
@@ -73,13 +73,13 @@ svcadm refresh quickbackup-percona
 touch /var/log/mysql/quickbackup-percona.log
 
 log "shutting down an existing instance of MySQL"
-if [[ "$(svcs -Ho state percona)" == "online" ]]; then
-  svcadm disable -t percona
+if [[ "$(svcs -Ho state svc:/pkgsrc/percona:default)" == "online" ]]; then
+  svcadm disable -t svc:/pkgsrc/percona:default
   sleep 2
 fi
 
 log "starting the new MySQL instance"
-svcadm enable percona
+svcadm enable svc:/pkgsrc/percona:default
 
 log "waiting for the socket to show up"
 COUNT="0";
@@ -97,7 +97,7 @@ log "(it took ${COUNT} seconds to start properly)"
 
 sleep 1
 
-[[ "$(svcs -Ho state percona)" == "online" ]] || \
+[[ "$(svcs -Ho state svc:/pkgsrc/percona:default)" == "online" ]] || \
   ( log "ERROR MySQL SMF not reporting as 'online'" && exit 31 )
 
 log "import zoneinfo to mysql db"
