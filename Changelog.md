@@ -1,5 +1,14 @@
 # Changelog
 
+## 20181018.0
+
+* use trunk base
+* move file-format to barracuda
+* increase redis maxmemory
+* prevent usage of risky commands for security reasons
+* only preserve the last 30 backups
+* use certificate if provided
+
 ## 17.4.4
 
 * add logadm config

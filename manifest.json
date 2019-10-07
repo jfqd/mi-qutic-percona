@@ -1,11 +1,11 @@
 {
   "name":         "qutic-base-64",
-  "version":      "17.4.4",
+  "version":      "20181018.0",
   "description":  "A SmartOS 64-bit image pre-configured and optimized as a Percona 64-bit MySQL server with Quickbackup.",
   "organization": "qutic development",
   "brand":        "Instance",
   "homepage":     "https://github.com/jfqd/mi-qutic-percona",
-  "base":         "26cf8c16-2b8e-11e8-8d7f-3fff13b53d67",
+  "base":         "15eddb38-d9ec-11e9-99c5-4ba3253bb0c7",
   "customer_metadata": {
     "admin_authorized_keys":  {"type": "text", "description": "SSH public authorized key(s) for the admin user"},
     "root_authorized_keys":   {"type": "text", "description": "SSH public authorized key(s) for the root user"},
