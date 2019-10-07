@@ -49,6 +49,7 @@ set -o errexit
 
 echo "* Remove unused mysql stuff from base"
 rm -rf /var/mysql/*
+chown -R mysql:mysql /var/mysql
 
 echo "* Activate munin plugins"
 /opt/qutic/bin/munin-node-plugins ${MUNIN_PLUGINS}
