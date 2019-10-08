@@ -29,4 +29,4 @@ fi
 chmod 0700 "${SSL_HOME}"
 chmod 0440 "${SSL_HOME}"/mysql.* || true
 chmod 0400 "${SSL_HOME}"/mysql.key || true
-chown -R mysql:mysql "${SSL_HOME}"
+chown -R mysql:mysql "${SSL_HOME}/.."
