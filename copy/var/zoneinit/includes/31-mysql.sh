@@ -78,40 +78,40 @@ if [[ "$(svcs -Ho state svc:/pkgsrc/percona:default)" == "online" ]]; then
   sleep 2
 fi
 
-log "setup MySQL instance"
-/opt/local/sbin/mysqld --initialize --user=mysql
-
-log "starting the new MySQL instance"
-svcadm enable -t svc:/pkgsrc/percona:default
-
-log "waiting for the socket to show up"
-COUNT="0";
-while [[ ! -e /tmp/mysql.sock ]]; do
-  sleep 1
-  ((COUNT=COUNT+1))
-  if [[ $COUNT -eq 60 ]]; then
-    log "ERROR Could not talk to MySQL after 60 seconds"
-    ERROR=yes
-    break 1
-  fi
-done
-[[ -n "${ERROR}" ]] && exit 31
-log "(it took ${COUNT} seconds to start properly)"
-
-sleep 1
-
-[[ "$(svcs -Ho state svc:/pkgsrc/percona:default)" == "online" ]] || \
-  ( log "ERROR MySQL SMF not reporting as 'online'" && exit 31 )
-
-log "import zoneinfo to mysql db"
-mysql_tzinfo_to_sql /usr/share/lib/zoneinfo | mysql mysql
-
-log "running the access lockdown SQL query"
-if [[ $(mysql -uroot -e "select version()" &>/dev/null)$? -eq "0" ]]; then
-  mysql -u root -e "${MYSQL_INIT}" >/dev/null || ( log "ERROR MySQL query failed to execute." && exit 31; )
-else
-  log "Can't login with no password set, continuing.";
-fi
+# log "setup MySQL instance"
+# /opt/local/sbin/mysqld --initialize --user=mysql
+# 
+# log "starting the new MySQL instance"
+# svcadm enable -t svc:/pkgsrc/percona:default
+# 
+# log "waiting for the socket to show up"
+# COUNT="0";
+# while [[ ! -e /tmp/mysql.sock ]]; do
+#   sleep 1
+#   ((COUNT=COUNT+1))
+#   if [[ $COUNT -eq 60 ]]; then
+#     log "ERROR Could not talk to MySQL after 60 seconds"
+#     ERROR=yes
+#     break 1
+#   fi
+# done
+# [[ -n "${ERROR}" ]] && exit 31
+# log "(it took ${COUNT} seconds to start properly)"
+# 
+# sleep 1
+# 
+# [[ "$(svcs -Ho state svc:/pkgsrc/percona:default)" == "online" ]] || \
+#   ( log "ERROR MySQL SMF not reporting as 'online'" && exit 31 )
+# 
+# log "import zoneinfo to mysql db"
+# mysql_tzinfo_to_sql /usr/share/lib/zoneinfo | mysql mysql
+# 
+# log "running the access lockdown SQL query"
+# if [[ $(mysql -uroot -e "select version()" &>/dev/null)$? -eq "0" ]]; then
+#   mysql -u root -e "${MYSQL_INIT}" >/dev/null || ( log "ERROR MySQL query failed to execute." && exit 31; )
+# else
+#   log "Can't login with no password set, continuing.";
+# fi
 
 # Create username and password file for root user
 log "create my.cnf for root user"
@@ -125,3 +125,4 @@ chmod 0400 /root/.my.cnf
 
 # fix munin-plugin config
 sed -i -e "s/env.mysqlpassword/env.mysqlpassword ${MYSQL_PW}/" /opt/local/etc/munin/plugin-conf.d/mysql
+chmod 0400 /opt/local/etc/munin/plugin-conf.d/mysql
