@@ -1,7 +1,7 @@
 gsed -i \
-     -e "s/# maxmemory <bytes>/maxmemory 2gb/" \
+     -e "s/# maxmemory <bytes>/maxmemory 1gb/" \
      -e "s/# maxmemory-policy noeviction/# maxmemory-policy allkeys-lfu/" \
-     -e "s/# unixsocket \/tmp\/redis.sock/unixsocket \/var\/tmp\/redis.sock/"
+     -e "s/# unixsocket \/tmp\/redis.sock/unixsocket \/var\/tmp\/redis.sock/" \
      /opt/local/etc/redis.conf
 
 cat >> /opt/local/etc/redis.conf << EOF
