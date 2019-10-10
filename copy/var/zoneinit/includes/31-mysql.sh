@@ -30,7 +30,7 @@ fi
 # Default query to lock down access and clean up
 MYSQL_INIT="DELETE FROM mysql.proxies_priv WHERE Host='base.joyent.us';
 GRANT ALL on *.* to 'root'@'localhost' identified by '${MYSQL_PW}' with grant option;
-GRANT ALL on *.* to 'root'@'${IP_INTERNAL}' identified by '${MYSQL_PW}' with grant option;
+GRANT ALL on *.* to 'root'@'127.0.0.1' identified by '${MYSQL_PW}' with grant option;
 GRANT LOCK TABLES,SELECT,RELOAD,SUPER,PROCESS,REPLICATION CLIENT on *.* to '${QB_US}'@'localhost' identified by '${QB_PW}';
 FLUSH PRIVILEGES;
 FLUSH TABLES;"
@@ -79,39 +79,44 @@ if [[ "$(svcs -Ho state svc:/pkgsrc/percona:default)" == "online" ]]; then
 fi
 
 # log "setup MySQL instance"
-# /opt/local/sbin/mysqld --initialize --user=mysql
-# 
-# log "starting the new MySQL instance"
-# svcadm enable -t svc:/pkgsrc/percona:default
-# 
-# log "waiting for the socket to show up"
-# COUNT="0";
-# while [[ ! -e /tmp/mysql.sock ]]; do
-#   sleep 1
-#   ((COUNT=COUNT+1))
-#   if [[ $COUNT -eq 60 ]]; then
-#     log "ERROR Could not talk to MySQL after 60 seconds"
-#     ERROR=yes
-#     break 1
-#   fi
-# done
-# [[ -n "${ERROR}" ]] && exit 31
-# log "(it took ${COUNT} seconds to start properly)"
-# 
-# sleep 1
-# 
-# [[ "$(svcs -Ho state svc:/pkgsrc/percona:default)" == "online" ]] || \
-#   ( log "ERROR MySQL SMF not reporting as 'online'" && exit 31 )
-# 
-# log "import zoneinfo to mysql db"
-# mysql_tzinfo_to_sql /usr/share/lib/zoneinfo | mysql mysql
-# 
-# log "running the access lockdown SQL query"
-# if [[ $(mysql -uroot -e "select version()" &>/dev/null)$? -eq "0" ]]; then
-#   mysql -u root -e "${MYSQL_INIT}" >/dev/null || ( log "ERROR MySQL query failed to execute." && exit 31; )
-# else
-#   log "Can't login with no password set, continuing.";
-# fi
+mv /var/mysql/certs/ /var/mysql-certs/
+chmod 0750 /var/mysql/
+( cd /var/mysql && rm -rf $(ls -Ab) )
+/opt/local/sbin/mysqld --initialize-insecure --user=mysql --basedir=/opt/local --datadir=/var/mysql --skip-name-resolve
+rm /var/mysql/*.pem
+mv /var/mysql-certs/ /var/mysql/certs/
+
+log "starting the new MySQL instance"
+svcadm enable -t svc:/pkgsrc/percona:default
+
+log "waiting for the socket to show up"
+COUNT="0";
+while [[ ! -e /tmp/mysql.sock ]]; do
+  sleep 1
+  ((COUNT=COUNT+1))
+  if [[ $COUNT -eq 60 ]]; then
+    log "ERROR Could not talk to MySQL after 60 seconds"
+    ERROR=yes
+    break 1
+  fi
+done
+[[ -n "${ERROR}" ]] && exit 31
+log "(it took ${COUNT} seconds to start properly)"
+
+sleep 1
+
+[[ "$(svcs -Ho state svc:/pkgsrc/percona:default)" == "online" ]] || \
+  ( log "ERROR MySQL SMF not reporting as 'online'" && exit 31 )
+
+log "import zoneinfo to mysql db"
+mysql_tzinfo_to_sql /usr/share/lib/zoneinfo | mysql mysql || true
+
+log "running the access lockdown SQL query"
+if [[ $(mysql -uroot --skip-password -e "select version()" &>/dev/null)$? -eq "0" ]]; then
+  mysql -u root --skip-password -e "${MYSQL_INIT}" >/dev/null || ( log "ERROR MySQL query failed to execute." && exit 31; )
+else
+  log "Can't login with no password set, continuing.";
+fi
 
 # Create username and password file for root user
 log "create my.cnf for root user"
