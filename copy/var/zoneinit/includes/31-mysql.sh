@@ -28,12 +28,11 @@ if [[ -z "${IP_INTERNAL}" ]]; then
 fi
 
 # Default query to lock down access and clean up
-MYSQL_INIT="GRANT LOCK TABLES,SELECT,RELOAD,SUPER,PROCESS,REPLICATION CLIENT on *.* to '${QB_US}'@'localhost' identified by '${QB_PW}';
+MYSQL_INIT="GRANT ALL on *.* to 'root'@'localhost' with grant option;
+CREATE USER IF NOT EXISTS '${QB_US}'@'localhost' IDENTIFIED BY '${QB_PW}';
+GRANT LOCK TABLES,SELECT,RELOAD,SUPER,PROCESS,REPLICATION CLIENT on *.* to '${QB_US}'@'localhost';
 FLUSH PRIVILEGES;
 FLUSH TABLES;"
-
-# GRANT ALL on *.* to 'root'@'localhost' identified by '${MYSQL_PW}' with grant option;
-# GRANT ALL on *.* to 'root'@'127.0.0.1' identified by '${MYSQL_PW}' with grant option;
 
 # MySQL my.cnf tuning
 MEMCAP=$(( ${RAM_IN_BYTES} / 1024 / 1024 ));
