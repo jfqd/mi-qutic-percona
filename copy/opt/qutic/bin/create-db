@@ -1,0 +1,21 @@
+#!/usr/bin/bash
+
+# create_db 'redmine' 'utf8mb4' '%' 'ALTER,CREATE,DELETE,DROP,INDEX,INSERT,SELECT,UPDATE' 'secure-pwd'
+
+name=$1
+characterset=$2
+host=$3
+privileges=$4
+password=$5
+
+if [[ "$characterset" = "utf8mb4" ]]; then
+  colate="COLLATE utf8mb4_unicode_ci"
+elif [[ "$characterset" = "utf8" ]]; then
+  colate="COLLATE utf8_general_ci"
+else
+  colate=""
+fi
+
+/opt/local/bin/mysql -u root -h 127.0.0.1 -e "CREATE DATABASE IF NOT EXISTS $name CHARACTER SET $characterset $colate;"
+/opt/local/bin/mysql -u root -h 127.0.0.1 -e "CREATE USER IF NOT EXISTS $name@'$host' IDENTIFIED BY '$password';"
+/opt/local/bin/mysql -u root -h 127.0.0.1 -e "GRANT $privileges ON $name.* TO $name@'$host';"
