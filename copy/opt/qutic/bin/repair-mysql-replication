@@ -1,0 +1,34 @@
+#!/usr/bin/bash
+
+status=0
+
+MasterHost="qsm02-mydb2.qutic.net"
+SlaveHost="qsm04-mydb1.qutic.net"
+
+SQLresponse=`mysql -u root -e 'show slave status \G' | grep -i 'Slave_SQL_Running' | gawk '{print $2}'`
+IOresponse=`mysql -u root -e 'show slave status \G' | grep -i 'Slave_IO_Running' |gawk '{print $2}'`
+LAST_SQL_ERROR=`mysql -u root -e 'show slave status \G' | grep -i 'Last_SQL_Error:'`
+
+if [ "$IOresponse" = "No" ]; then
+  error="Replication on the slave MySQL server($SlaveHost) has stopped working.\nSlave_IO_Running: No\n"
+  status=1
+fi
+
+if [ "$SQLresponse" = "No" ]; then
+  if [ $status = 1 ]; then
+    error="Replication on the slave MySQL server($SlaveHost) has stopped working.\nSlave_SQL_Running: No\n"
+  else
+    # try to recover
+    error="Replication on the slave MySQL server($SlaveHost) has stopped working.\nSlave_SQL_Running: No\nTry to recover...\n"
+    echo $LAST_SQL_ERROR
+    # mysql -u root -e 'STOP SLAVE;SET GLOBAL SQL_SLAVE_SKIP_COUNTER = 1;START SLAVE;'
+    mysql -u root -e 'STOP SLAVE;'
+    mysql -u root -e 'SET GLOBAL SQL_SLAVE_SKIP_COUNTER = 1;'
+    mysql -u root -e 'START SLAVE;'
+    status=1
+  fi
+else
+  error="."
+fi
+
+echo -e $error
