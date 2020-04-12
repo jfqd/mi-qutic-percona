@@ -1,32 +1,21 @@
 #!/usr/bin/bash
 
-/usr/bin/test -x /opt/local/bin/mysql || exit 1
-/usr/bin/test -x /opt/local/bin/mysqldump || exit 1
-/usr/bin/test -d /var/backups/percona  || exit 1
-
-/usr/bin/logger -p notice -t mysqldump "Starting daily mysqldump."
+/usr/bin/test -x /opt/local/bin/xtrabackup || exit 1
+/usr/bin/test -d /var/backups/mysql || exit 1
 
 today=`date +%Y%m%d-%H%M%S`
 host=`/usr/bin/hostname`
-folder="/var/backups/percona/${host}/${today}"
+folder="/var/backups/mysql/${host}"
+today_folder="${folder}/${today}"
 
-/usr/bin/mkdir -p "${folder}"
+/usr/bin/logger -p notice -t mysqldump "Starting daily mysqldump."
 
-databases=`/opt/local/bin/mysql --user=root --host=127.0.0.1 -e "SHOW DATABASES;" | /opt/local/bin/ggrep -Ev "(Database|information_schema|performance_schema)"`
-for db in $databases; do
-  /opt/local/bin/mysqldump --user=root --host=127.0.0.1 --quote-names --add-drop-table --lock-tables --databases $db | /usr/bin/gzip > "${folder}/${db}.sql.gz"
-  EXITVALUE=$?
-  if [ $EXITVALUE != 0 ]; then
-    /usr/bin/logger -p crit -t mysqldump "ALERT backup of $db exited abnormally with [$EXITVALUE]"
-  fi
-done
+/usr/bin/mkdir -p "${today_folder}"
+/opt/local/bin/xtrabackup --user=root --backup --target-dir="${today_folder}"
+/opt/local/bin/xtrabackup --prepare --target-dir="${today_folder}"
 
-chown -R mysql:mysql /var/backups/percona
-chmod 0750 "/var/backups/percona/${host}/${today}"
-chmod 0640 "/var/backups/percona/${host}/${today}/"*
-
-# only preserve the last 30 backups
-/usr/bin/ls -1dt "/var/backups/percona/${host}"/* | /usr/bin/tail -n +30 | /usr/bin/xargs rm -rf
+# only preserve the last 7 backups
+/usr/bin/ls -1dt "${folder}"/* | /usr/bin/tail -n +8 | /usr/bin/xargs rm -rf
 
 /usr/bin/logger -p notice -t mysqldump "End of daily mysqldump."
 
