@@ -1,7 +1,7 @@
 # List packages to add to your image one per line.
 p5-DBD-percona80
 p5-Cache-Cache
-percona-server-8.0.15
+percona-server-8.0.18
 percona-toolkit
 percona-xtrabackup
 # already installed as a dependency
@@ -15,3 +15,5 @@ redis
 memcached
 p5-Cache-Memcached
 spiped
+py37-pip
+py37-redis
