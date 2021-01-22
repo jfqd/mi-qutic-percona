@@ -51,13 +51,6 @@ echo "* Remove unused mysql stuff from base"
 rm -rf /var/mysql/*
 chown -R mysql:mysql /var/mysql
 
-echo "* Fix this and that"
-chmod 0640 /opt/qutic/libexec/.env
-chown root:pdns /opt/qutic/libexec/.env
-mkdir -p /var/lib/pdns
-chown pdns:pdns /var/lib/pdns
-sed -i -e "s|/var/run/pdns|/var/lib/pdns|" /etc/passwd
-
 echo "* Activate munin plugins"
 /opt/qutic/bin/munin-node-plugins ${MUNIN_PLUGINS}
 
