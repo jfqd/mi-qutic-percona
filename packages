@@ -17,3 +17,4 @@ p5-Cache-Memcached
 spiped
 py37-pip
 py37-redis
+gawk
