@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'mysql2'
+require 'sequel'
+require 'dotenv'
+Dotenv.load
+
+begin
+  DB = Sequel.connect(
+    adapter:  'mysql2',
+    user:     ENV['MYSQL_USER'],
+    host:     ENV['MYSQL_HOST'],
+    database: ENV['MYSQL_DATABASE'],
+    password: ENV['MYSQL_PWD']
+  )
+rescue Exception => e
+  STDERR.puts "ERROR: failed to connect to Database!"
+  exit 1
+end
+
+domains = DB[:domains].where(type: 'SLAVE').all
+
+domains.each do |domain|
+  r = %x[/usr/sbin/dig +short #{domain[:name]} @ns1.qutic.com]
+  puts "delete #{domain[:name]}" if r == ""
+  DB[:domains].where(id: domain[:id]).limit(1).delete
+end

@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+cd /opt/qutic/libexec/
+./cleanup-domains
