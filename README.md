@@ -55,7 +55,7 @@ vmadm create << EOF
     "mysql_server_id":       "1",
     "mysql_qb_pw":           "c418530bee3ccf52f2637e1baac4b72b"
   },
-  "delegate_dataset":      false
+  "delegate_dataset":      true
 }
 EOF
 ```
