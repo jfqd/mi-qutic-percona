@@ -2,8 +2,8 @@
 
 status=0
 
-MasterHost="qsm02-mydb2.qutic.net"
-SlaveHost="qsm04-mydb1.qutic.net"
+MasterHost=$(hostname)
+SlaveHost=$(mdata-get mysql_replication_host)
 
 SQLresponse=`mysql -u root -e 'show slave status \G' | grep -i 'Slave_SQL_Running' | gawk '{print $2}'`
 IOresponse=`mysql -u root -e 'show slave status \G' | grep -i 'Slave_IO_Running' |gawk '{print $2}'`
