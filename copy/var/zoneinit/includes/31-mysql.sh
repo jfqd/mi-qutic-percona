@@ -35,7 +35,8 @@ FLUSH PRIVILEGES;
 FLUSH TABLES;"
 
 # MySQL my.cnf tuning
-MEMCAP=$(( ${RAM_IN_BYTES} / 1024 / 1024 ));
+# copied from: https://github.com/joyent/mi-percona/blob/master/copy/var/zoneinit/includes/31-mysql.sh
+MEMCAP=$(kstat -c zone_memory_cap -s physcap -p | cut -f2 | awk '{ printf "%d", $1/1024/1024 }');
 
 # innodb_buffer_pool_size
 INNODB_BUFFER_POOL_SIZE=$(echo -e "scale=0; ${MEMCAP}/2"|bc)M
