@@ -1,12 +1,14 @@
 #!/usr/bin/bash
 
-# create_db 'redmine' 'utf8mb4' '%' 'ALTER,CREATE,DELETE,DROP,INDEX,INSERT,SELECT,UPDATE' 'secure-pwd'
+# create_db 'rdm-k1234a12345' 'rdm-k1234a12345' 'utf8mb4' '%' 'ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE' 'secure-pwd'
+# create_db 'db-name?' 'db-user' 'characterset' 'host' 'privileges' 'password'
 
-name=$1
-characterset=$2
-host=$3
-privileges=$4
-password=$5
+database=$1
+db_user=$2
+characterset=$3
+host=$4
+privileges=$5
+password=$6
 
 if [[ "$characterset" = "utf8mb4" ]]; then
   colate="COLLATE utf8mb4_unicode_ci"
@@ -16,6 +18,7 @@ else
   colate=""
 fi
 
-/opt/local/bin/mysql -u root -h 127.0.0.1 -e "CREATE DATABASE IF NOT EXISTS $name CHARACTER SET $characterset $colate;"
-/opt/local/bin/mysql -u root -h 127.0.0.1 -e "CREATE USER IF NOT EXISTS $name@'$host' IDENTIFIED BY '$password';"
-/opt/local/bin/mysql -u root -h 127.0.0.1 -e "GRANT $privileges ON $name.* TO $name@'$host';"
+/opt/local/bin/mysql -u root -h 127.0.0.1 -e "CREATE DATABASE IF NOT EXISTS ${database} CHARACTER SET ${characterset} ${colate};"
+/opt/local/bin/mysql -u root -h 127.0.0.1 -e "CREATE USER IF NOT EXISTS ${db_user}@'$host' IDENTIFIED BY '${password}';"
+/opt/local/bin/mysql -u root -h 127.0.0.1 -e "GRANT ${privileges} ON ${db_user}.* TO ${db_user}@'${host}';"
+/opt/local/bin/mysql -u root -h 127.0.0.1 -e "ALTER USER ${db_user}@'${host}' IDENTIFIED WITH 'mysql_native_password' BY '${password}';"
