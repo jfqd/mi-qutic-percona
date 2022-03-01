@@ -1,0 +1,13 @@
+#!/usr/bin/bash
+# upgrade system
+/opt/local/bin/pkgin -y ug
+/opt/local/bin/pkgin clean
+# fix common issues
+/usr/sbin/svcadm restart nullmailer
+/usr/bin/svcs -vx
+# fix mysqltuner
+gsed -i \
+     -e 's#svc:/network/mysql-quickbackup:default#svc:/pkgsrc/quickbackup-percona:default#' \
+     -e 's#my $userpath = `printenv HOME`;#my $userpath = `/opt/local/heirloom/bin/printenv HOME`;#' \
+     -e 's|$mysqllogin = "-u $mysql_login -p$mysql_pass";|$mysqllogin = "-h localhost -u $mysql_login -p$mysql_pass";|' \
+     /opt/local/bin/mysqltuner.pl

@@ -61,6 +61,7 @@ echo "* fix mysqltuner"
 gsed -i \
      -e 's#svc:/network/mysql-quickbackup:default#svc:/pkgsrc/quickbackup-percona:default#' \
      -e 's#my $userpath = `printenv HOME`;#my $userpath = `/opt/local/heirloom/bin/printenv HOME`;#' \
+     -e 's|$mysqllogin = "-u $mysql_login -p$mysql_pass";|$mysqllogin = "-h localhost -u $mysql_login -p$mysql_pass";|' \
      /opt/local/bin/mysqltuner.pl
 
 mv /var/zoneinit/tmp/memcached /opt/local/etc/munin/plugin-conf.d/memcached
