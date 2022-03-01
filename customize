@@ -82,6 +82,11 @@ echo "* setup backup path"
 mkdir -p /var/backups/mysql
 chmod 0750 /var/backups/percona
 
+cat >> /root/.bash_history << EOF
+for i in {1..10000}; do /opt/qutic/bin/repair-mysql-replication; sleep 1; done
+/opt/qutic/bin/repair-mysql-replication
+EOF
+
 echo "* Cleaning up"
 rm /root/customize
 cp /etc/skel/.bashrc /root/.bashrc
