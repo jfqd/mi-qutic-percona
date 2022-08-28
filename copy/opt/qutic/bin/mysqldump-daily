@@ -1,18 +1,53 @@
 #!/usr/bin/bash
 
-/usr/bin/test -x /opt/local/bin/xtrabackup || exit 1
-/usr/bin/test -d /var/backups/mysql || exit 1
-
 today=`date +%Y%m%d-%H%M%S`
 host=`/usr/bin/hostname`
 folder="/var/backups/mysql/${host}"
 today_folder="${folder}/${today}"
 
-/usr/bin/logger -p notice -t mysqldump "Starting daily mysqldump."
+if [[ -x /opt/local/bin/mariadb ]]; then
+  MYSQL=mariadb
+  DUMP=mariadb-dump
+elif [[ -x /opt/local/bin/mysql ]]; then
+  MYSQL=mysql
+  DUMP=mysqldump
+else
+  echo "mysql or mariadb not installed, extiting..."
+  exit 1
+fi
 
+/usr/bin/logger -p notice -t mysqldump "Starting daily mysqldump."
 /usr/bin/mkdir -p "${today_folder}"
-/opt/local/bin/xtrabackup --user=root --backup --target-dir="${today_folder}"
-/opt/local/bin/xtrabackup --prepare --target-dir="${today_folder}"
+  
+if [[ "$1" == "--dump" ]]; then
+  databases=`/opt/local/bin/$MYSQL --user=root --host=127.0.0.1 -e "SHOW DATABASES;" | /opt/local/bin/ggrep -Ev "(Database|information_schema|performance_schema)"`
+  for db in $databases; do
+    /opt/local/bin/$DUMP --user=root --host=127.0.0.1 --quote-names --add-drop-table --lock-tables --databases $db | /usr/bin/gzip > "${today_folder}/${db}.sql.gz"
+    EXITVALUE=$?
+    if [[ "$EXITVALUE" != "0" ]]; then
+      /usr/bin/logger -p crit -t mysqldump "ALERT backup of $db exited abnormally with [$EXITVALUE]"
+    fi
+  done
+elif [[ "$1" == "--all-databases" ]]; then
+  /opt/local/bin/$DUMP --user=root --host=127.0.0.1 --quote-names --add-drop-table --lock-tables --all-databases | /usr/bin/gzip > "${today_folder}/mysqldump_all_databases.sql.gz"
+  EXITVALUE=$?
+  if [[ "$EXITVALUE" != "0" ]]; then
+    /usr/bin/logger -p crit -t mysqldump "ALERT backup of all databases exited abnormally with [$EXITVALUE]"
+  fi
+elif [[ "$1" == "--xtrabackup" ]]; then
+  if [[ ! -x /opt/local/bin/xtrabackup ]]; then
+    echo "xtrabackup is missing, extiting..."
+    exit 1
+  fi
+  if [[ ! -d /var/backups/mysql ]]; then
+    echo "backups folder is missing, extiting..."
+    exit 1
+  fi
+  /opt/local/bin/xtrabackup --user=root --backup --target-dir="${today_folder}"
+  /opt/local/bin/xtrabackup --prepare --target-dir="${today_folder}"
+else
+  echo "no export flag was given, use --dump, --all-databases or --xtrabackup"
+fi
 
 # only preserve the last 7 backups
 /usr/bin/ls -1dt "${folder}"/* | /usr/bin/tail -n +8 | /usr/bin/xargs rm -rf
