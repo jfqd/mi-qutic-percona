@@ -1,5 +1,12 @@
 # Changelog
 
+## 20240116.0 - 2026-05-13
+
+* remove redis, memcached and spiped
+* add missing jq command
+* add commands to bash-history
+* remove munin plugins
+
 ## 20181018.0
 
 * use trunk base
