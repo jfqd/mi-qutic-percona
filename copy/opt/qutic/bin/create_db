@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # create_db 'rdm-k1234a12345' 'rdm-k1234a12345' 'utf8mb4' '%' 'ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE' 'secure-pwd'
-# create_db 'db-name?' 'db-user' 'characterset' 'host' 'privileges' 'password'
+# create_db 'db-name' 'db-user' 'characterset' 'host' 'privileges' 'password'
 
 database=$1
 db_user=$2

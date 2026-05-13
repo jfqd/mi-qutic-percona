@@ -11,29 +11,14 @@ echo "* Remove unused mysql stuff from base"
 rm -rf /var/mysql/*
 chown -R mysql:mysql /var/mysql
 
-echo "* Install redis"
-gem install redis
-
-echo "* fix mysqltuner"
-gsed -i \
-     -e 's#svc:/network/mysql-quickbackup:default#svc:/pkgsrc/quickbackup-percona:default#' \
-     -e 's#my $userpath = `printenv HOME`;#my $userpath = `/opt/local/heirloom/bin/printenv HOME`;#' \
-     -e 's|$mysqllogin = "-u $mysql_login -p$mysql_pass";|$mysqllogin = "-h localhost -u $mysql_login -p$mysql_pass";|' \
-     /opt/local/bin/mysqltuner.pl
+#echo "* fix mysqltuner"
+#gsed -i \
+#     -e 's#svc:/network/mysql-quickbackup:default#svc:/pkgsrc/quickbackup-percona:default#' \
+#     -e 's#my $userpath = `printenv HOME`;#my $userpath = `/opt/local/heirloom/bin/printenv HOME`;#' \
+#     -e 's|$mysqllogin = "-u $mysql_login -p$mysql_pass";|$mysqllogin = "-h localhost -u $mysql_login -p$mysql_pass";|' \
+#     /opt/local/bin/mysqltuner.pl
 
 mv /var/zoneinit/tmp/memcached /opt/local/etc/munin/plugin-conf.d/memcached
-
-echo "* setup spiped"
-groupadd -g 120 spiped
-useradd -m -s /usr/bin/false -d / -u 120 -g spiped spiped
-dd if=/dev/urandom bs=32 count=1 2>/dev/null | shasum -a 512 | awk '{print $1}' | tr -d '\n' > /etc/ssh/spiped.key
-chmod 0640 /etc/ssh/spiped.key
-chown root:spiped /etc/ssh/spiped.key
-
-svccfg import /opt/local/lib/svc/manifest/spiped-memcached.xml
-svccfg import /opt/local/lib/svc/manifest/spiped-percona.xml
-svccfg import /opt/local/lib/svc/manifest/spiped-redis.xml
-svccfg delete svc:/pkgsrc/spiped:default
 
 echo "* setup backup path"
 mkdir -p /var/backups/mysql
